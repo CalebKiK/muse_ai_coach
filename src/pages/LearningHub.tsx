@@ -1,6 +1,6 @@
 /**
- * 学习中心页面
- * 整合学习、复习、测验三大核心功能
+ * Learning hub page.
+ * Brings together the core learn, review, and quiz flows.
  */
 
 import { useState, useEffect } from 'react'
@@ -16,18 +16,18 @@ import {
 import { Link } from 'react-router-dom'
 import { useAppStore } from '../store'
 
-// 本地励志名言库（避免 CSP 问题）
+// Local quote library to avoid CSP issues.
 const localQuotes = [
-  { text: '学习是唯一的归途，知识改变命运。', from: 'Muse' },
-  { text: '不积跬步，无以至千里；不积小流，无以成江海。', from: '荀子' },
-  { text: '书山有路勤为径，学海无涯苦作舟。', from: '韩愈' },
-  { text: '读书破万卷，下笔如有神。', from: '杜甫' },
-  { text: '学而不思则罔，思而不学则殆。', from: '孔子' },
-  { text: '路漫漫其修远兮，吾将上下而求索。', from: '屈原' },
-  { text: '业精于勤，荒于嬉；行成于思，毁于随。', from: '韩愈' },
-  { text: '纸上得来终觉浅，绝知此事要躬行。', from: '陆游' },
-  { text: '少壮不努力，老大徒伤悲。', from: '长歌行' },
-  { text: '黑发不知勤学早，白首方悔读书迟。', from: '颜真卿' },
+  { text: 'Learning compounds. Small, consistent steps lead to remarkable progress.', from: 'Muse' },
+  { text: 'A journey of a thousand miles begins with steady steps.', from: 'Inspired by Xunzi' },
+  { text: 'Diligence opens the path through every mountain of study.', from: 'Inspired by Han Yu' },
+  { text: 'Read deeply and expression becomes more powerful.', from: 'Inspired by Du Fu' },
+  { text: 'Learning without reflection is shallow; reflection without learning is empty.', from: 'Inspired by Confucius' },
+  { text: 'Keep searching, even when the path feels long.', from: 'Inspired by Qu Yuan' },
+  { text: 'Mastery grows through focus, discipline, and thought.', from: 'Inspired by Han Yu' },
+  { text: 'Knowledge becomes real when you put it into practice.', from: 'Inspired by Lu You' },
+  { text: 'What you build today becomes your strength tomorrow.', from: 'Muse' },
+  { text: 'The best time to learn is now.', from: 'Muse' },
 ]
 
 type TabType = 'learn' | 'review' | 'quiz'
@@ -45,24 +45,24 @@ interface TabConfig {
 const tabs: TabConfig[] = [
   {
     id: 'learn',
-    title: '学习',
-    description: '学习新单词',
+    title: 'Learn',
+    description: 'Study new words',
     icon: BookOpen,
     color: 'blue',
     route: '/learn',
   },
   {
     id: 'review',
-    title: '复习',
-    description: '巩固已学内容',
+    title: 'Review',
+    description: 'Strengthen what you already know',
     icon: RotateCcw,
     color: 'green',
     route: '/review',
   },
   {
     id: 'quiz',
-    title: '测验',
-    description: '检验学习成果',
+    title: 'Quiz',
+    description: 'Test what you have learned',
     icon: Target,
     color: 'purple',
     route: '/quiz',
@@ -74,7 +74,7 @@ export default function LearningHub() {
   const [quote, setQuote] = useState(localQuotes[0])
 
   useEffect(() => {
-    // 随机选择一条名言
+    // Pick a random quote.
     const randomIndex = Math.floor(Math.random() * localQuotes.length)
     setQuote(localQuotes[randomIndex])
   }, [])
@@ -82,20 +82,20 @@ export default function LearningHub() {
   return (
     <div className="h-full overflow-y-auto p-6">
       <div className="max-w-5xl mx-auto space-y-6">
-        {/* 标题 */}
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            📚 学习中心
+            📚 Learning Hub
           </h1>
           <p className="text-gray-600">
-            学习、复习、测验，一站式完成你的英语学习计划
+            Learn, review, and quiz from one place
           </p>
         </motion.div>
 
-        {/* 学习模式选择 */}
+        {/* Study mode selection */}
         <div className="grid md:grid-cols-3 gap-4">
           {tabs.map((tab, index) => {
             const Icon = tab.icon
@@ -145,7 +145,7 @@ export default function LearningHub() {
           })}
         </div>
 
-        {/* 快捷入口 */}
+        {/* Quick access */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -159,8 +159,8 @@ export default function LearningHub() {
                     <Library className="w-8 h-8 text-amber-500" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800">词库管理</h3>
-                    <p className="text-gray-500 text-sm">浏览和管理单词词库</p>
+                    <h3 className="text-lg font-semibold text-gray-800">Word Books</h3>
+                    <p className="text-gray-500 text-sm">Browse and manage your vocabulary collections</p>
                   </div>
                 </div>
                 <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
@@ -169,19 +169,19 @@ export default function LearningHub() {
           </Link>
         </motion.div>
 
-        {/* 学习设置 */}
+        {/* Study settings */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="grid md:grid-cols-2 gap-4"
         >
-          {/* 每日学习目标 */}
+          {/* Daily goal */}
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">每日学习目标</h3>
-                <p className="text-gray-500 text-sm">每天新学单词的数量</p>
+                <h3 className="text-lg font-semibold text-gray-800">Daily learning goal</h3>
+                <p className="text-gray-500 text-sm">How many new words to learn each day</p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
                 <span className="text-blue-600 font-bold text-lg">📚</span>
@@ -198,7 +198,7 @@ export default function LearningHub() {
 
               <div className="text-center">
                 <div className="text-3xl font-bold text-gray-900">{settings.dailyGoal}</div>
-                <div className="text-xs text-gray-500 mt-1">个/天</div>
+                <div className="text-xs text-gray-500 mt-1">words/day</div>
               </div>
 
               <button
@@ -209,7 +209,7 @@ export default function LearningHub() {
               </button>
             </div>
 
-            {/* 预设选项 */}
+            {/* Presets */}
             <div className="flex gap-2">
               {[10, 20, 30, 50].map((value) => (
                 <button
@@ -227,12 +227,12 @@ export default function LearningHub() {
             </div>
           </div>
 
-          {/* 快速复习数量 */}
+          {/* Quick review size */}
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">快速复习数量</h3>
-                <p className="text-gray-500 text-sm">每次快速复习的单词数</p>
+                <h3 className="text-lg font-semibold text-gray-800">Quick review size</h3>
+                <p className="text-gray-500 text-sm">How many words to include in each quick review</p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center">
                 <span className="text-violet-600 font-bold text-lg">⚡</span>
@@ -249,7 +249,7 @@ export default function LearningHub() {
 
               <div className="text-center">
                 <div className="text-3xl font-bold text-gray-900">{settings.quickReviewLimit || 30}</div>
-                <div className="text-xs text-gray-500 mt-1">个/次</div>
+                <div className="text-xs text-gray-500 mt-1">words/session</div>
               </div>
 
               <button
@@ -260,7 +260,7 @@ export default function LearningHub() {
               </button>
             </div>
 
-            {/* 预设选项 */}
+            {/* Presets */}
             <div className="flex gap-2">
               {[20, 30, 50, 100].map((value) => (
                 <button
@@ -279,7 +279,7 @@ export default function LearningHub() {
           </div>
         </motion.div>
 
-        {/* 一言 */}
+        {/* Quote */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

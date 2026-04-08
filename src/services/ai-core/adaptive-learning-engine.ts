@@ -66,7 +66,7 @@ export class AdaptiveLearningEngine {
       // 使用AI预测个性化复习间隔
       return await this.predictWithAI(wordId, profile, wordHistory);
     } catch (error) {
-      console.error('AI预测失败，回退到SM-2算法:', error);
+      console.error('AI prediction failed. Falling back to SM-2:', error);
       if (this.config.fallbackToSM2) {
         return this.fallbackToSM2(wordId, wordHistory);
       }
@@ -92,32 +92,32 @@ export class AdaptiveLearningEngine {
     const response = await aiService.chat([
       {
         role: 'system',
-        content: `你是一个专业的记忆科学专家，精通艾宾浩斯遗忘曲线和个性化学习算法。
-请根据用户的学习数据和个性化特征，预测最佳的复习时间。
+        content: `You are a memory-science expert with deep knowledge of forgetting curves and personalized review scheduling.
+Use the learner's study data and profile to predict the best review interval.
 
-你必须严格按照以下JSON格式返回：
+You must return valid JSON in exactly this shape:
 {
-  "interval": 复习间隔（小时，整数）,
-  "confidence": 预测置信度（0-1之间的小数）,
+  "interval": integer hours,
+  "confidence": decimal between 0 and 1,
   "difficulty": "easy" | "medium" | "hard",
-  "reasoning": "简短解释为什么选择这个间隔（50字以内）",
-  "suggestedAction": "针对这个单词的个性化学习建议（30字以内）"
+  "reasoning": "brief explanation of the decision in under 25 words",
+  "suggestedAction": "personalized study advice in under 20 words"
 }
 
-考虑因素：
-1. 用户的记忆特征（遗忘曲线斜率）
-2. 用户对该单词的表现（正确率、反应时间）
-3. 用户的认知风格（视觉/语言/情境学习偏好）
-4. 用户的学习时段偏好
-5. 当前情感状态（信心、动机水平）
+Consider:
+1. Memory characteristics and the learner's forgetting pattern
+2. Accuracy and response time for this word
+3. Cognitive-style preferences
+4. Preferred study window
+5. Confidence and motivation signals
 
-输出要求：
-- interval范围：${this.config.minInterval}到${this.config.maxInterval}小时
-- 正确率高的单词：给予更长的间隔
-- 正确率低的单词：缩短复习间隔
-- 反应时间快：表明记忆牢固，可以延长间隔
-- 反应时间慢：表明记忆模糊，需要加强复习
-- 只返回JSON，不要其他内容`
+Output rules:
+- interval must be between ${this.config.minInterval} and ${this.config.maxInterval} hours
+- higher accuracy should generally increase the interval
+- lower accuracy should shorten the interval
+- faster responses suggest stronger recall
+- slower responses suggest weaker recall
+- return JSON only and no markdown`
       },
       {
         role: 'user',
@@ -150,58 +150,54 @@ export class AdaptiveLearningEngine {
     _wordHistory: LearningEvent[],
     historyAnalysis: ReturnType<typeof AdaptiveLearningEngine.prototype.analyzeWordHistory>
   ): string {
-    // 记忆特征
     const memory = profile.memoryPattern;
-    // 行为模式
     const behavior = profile.behaviorPattern;
-    // 情感状态
     const emotional = profile.emotionalState;
-
-    // 动态时间范围指导
     const intervalGuidance = this.getIntervalGuidance(historyAnalysis);
 
-    return `## 决策任务
-预测以下单词的最佳复习间隔（小时）
+    return `## Task
+Predict the best next review interval for this word in hours.
 
-## 用户画像
-**记忆特征**
-- 遗忘曲线: [${memory.forgettingCurve.map(v => v.toFixed(2)).join(', ')}]
-- 最佳复习间隔: ${memory.optimalReviewInterval}小时
-- 短期记忆保留: ${(memory.shortTermRetention * 100).toFixed(0)}%
-- 长期记忆保留: ${(memory.longTermRetention * 100).toFixed(0)}%
+## Learner profile
+**Memory**
+- Forgetting curve: [${memory.forgettingCurve.map(v => v.toFixed(2)).join(', ')}]
+- Best review interval: ${memory.optimalReviewInterval} hours
+- Short-term retention: ${(memory.shortTermRetention * 100).toFixed(0)}%
+- Long-term retention: ${(memory.longTermRetention * 100).toFixed(0)}%
 
-**学习行为**
-- 最佳时段: ${behavior.preferredStudyTime}
-- 习惯时长: ${behavior.sessionDuration}分钟
-- 学习一致性: ${(behavior.consistency * 100).toFixed(0)}%
+**Study behavior**
+- Best study window: ${behavior.preferredStudyTime}
+- Typical session length: ${behavior.sessionDuration} minutes
+- Consistency: ${(behavior.consistency * 100).toFixed(0)}%
 
-**情感状态**
-- 学习信心: ${(emotional.confidence * 100).toFixed(0)}%
-- 当前动机: ${(emotional.motivation * 100).toFixed(0)}%
+**Emotional state**
+- Confidence: ${(emotional.confidence * 100).toFixed(0)}%
+- Motivation: ${(emotional.motivation * 100).toFixed(0)}%
 
-## 单词学习历史
-- 学习次数: ${historyAnalysis.totalAttempts}次
-- 正确率: ${(historyAnalysis.correctRate * 100).toFixed(1)}%
-- 平均反应: ${historyAnalysis.avgResponseTime}ms
-- 最近表现: ${historyAnalysis.recentPerformance}
-- 上次结果: ${historyAnalysis.lastResult}
+## Word history
+- Attempts: ${historyAnalysis.totalAttempts}
+- Accuracy: ${(historyAnalysis.correctRate * 100).toFixed(1)}%
+- Average response: ${historyAnalysis.avgResponseTime}ms
+- Recent performance: ${historyAnalysis.recentPerformance}
+- Last result: ${historyAnalysis.lastResult}
 
 ${intervalGuidance}
 
-## 决策优先级
-1. **反应时间权重**: <1500ms×1.5, 1500-2500ms×1.2, 2500-4000ms×1.0, >4000ms×0.7
-2. **正确率调整**: <80%缩短, >90%延长
-3. **情感考虑**: 信心低时避免挑战
-4. **特殊情况**: 连续错误用2-6小时
+## Decision priorities
+1. **Response-time weighting**: <1500ms x1.5, 1500-2500ms x1.2, 2500-4000ms x1.0, >4000ms x0.7
+2. **Accuracy adjustment**: under 80% shortens the interval, above 90% extends it
+3. **Emotional guardrails**: avoid aggressive difficulty when confidence is low
+4. **Special case**: repeated errors should usually land in a 2-6 hour interval
 
-## 输出要求
-严格按照以下JSON格式返回（不要包含markdown代码块标记）：
+## Output
+Return valid JSON only, with no markdown fences:
 {
-  "interval": 复习间隔（小时，整数）,
-  "confidence": 预测置信度（0-1之间的小数）,
+  "interval": integer hours,
+  "confidence": decimal between 0 and 1,
   "difficulty": "easy" | "medium" | "hard",
-  "reasoning": "简短解释决策过程（50字以内）",
-  "suggestedAction": "个性化学习建议（30字以内）}`;
+  "reasoning": "brief explanation in under 25 words",
+  "suggestedAction": "personalized study advice in under 20 words"
+}`;
   }
 
   /**
@@ -211,44 +207,44 @@ ${intervalGuidance}
     const { totalAttempts, correctRate, avgResponseTime } = historyAnalysis;
 
     let baseInterval = 24;
-    let guidance = '## 时间范围指导\n';
+    let guidance = '## Interval guidance\n';
 
     if (totalAttempts === 1) {
       baseInterval = 4;
-      guidance += `- 首次学习 → 推荐4小时（2-12小时范围）\n`;
+      guidance += `- First exposure -> recommend 4 hours (range: 2-12 hours)\n`;
     } else if (totalAttempts <= 3) {
       if (correctRate >= 0.8) {
         baseInterval = 24;
-        guidance += `- 早期学习+正确率高 → 推荐24小时（12-48小时范围）\n`;
+        guidance += `- Early stage + high accuracy -> recommend 24 hours (range: 12-48 hours)\n`;
       } else {
         baseInterval = 4;
-        guidance += `- 早期学习+正确率低 → 推荐4小时（2-12小时范围）\n`;
+        guidance += `- Early stage + low accuracy -> recommend 4 hours (range: 2-12 hours)\n`;
       }
     } else if (totalAttempts <= 10) {
       if (correctRate >= 0.9) {
         baseInterval = 120;
-        guidance += `- 中期学习+掌握良好 → 推荐120小时/5天（3-7天范围）\n`;
+        guidance += `- Mid stage + strong mastery -> recommend 120 hours / 5 days (range: 3-7 days)\n`;
       } else {
         baseInterval = 24;
-        guidance += `- 中期学习+掌握不足 → 推荐24小时（12-48小时范围）\n`;
+        guidance += `- Mid stage + weak mastery -> recommend 24 hours (range: 12-48 hours)\n`;
       }
     } else {
       if (correctRate >= 0.95) {
         baseInterval = 336;
-        guidance += `- 长期记忆+掌握优秀 → 推荐336小时/14天（7-30天范围）\n`;
+        guidance += `- Long-term memory + excellent mastery -> recommend 336 hours / 14 days (range: 7-30 days)\n`;
       } else {
         baseInterval = 48;
-        guidance += `- 长期记忆+掌握一般 → 推荐48小时/2天（1-5天范围）\n`;
+        guidance += `- Long-term memory + average mastery -> recommend 48 hours / 2 days (range: 1-5 days)\n`;
       }
     }
 
     // 反应时间调整
-    const timeAdjustment = avgResponseTime < 1500 ? '×1.5 (延长50%)' :
-                          avgResponseTime < 2500 ? '×1.2 (延长20%)' :
-                          avgResponseTime < 4000 ? '×1.0 (不变)' : '×0.7 (缩短30%)';
+    const timeAdjustment = avgResponseTime < 1500 ? 'x1.5 (extend by 50%)' :
+                          avgResponseTime < 2500 ? 'x1.2 (extend by 20%)' :
+                          avgResponseTime < 4000 ? 'x1.0 (no change)' : 'x0.7 (shorten by 30%)';
 
-    guidance += `\n**基础间隔**: ${baseInterval}小时\n`;
-    guidance += `**反应时间调整**: ${avgResponseTime}ms → ${timeAdjustment}`;
+    guidance += `\n**Base interval**: ${baseInterval} hours\n`;
+    guidance += `**Response-time adjustment**: ${avgResponseTime}ms -> ${timeAdjustment}`;
 
     return guidance;
   }
@@ -262,7 +258,7 @@ ${intervalGuidance}
         totalAttempts: 0,
         correctRate: 0,
         avgResponseTime: 0,
-        recentPerformance: '首次学习',
+        recentPerformance: 'First exposure',
         lastAction: 'none',
         lastResult: 'none',
         timeSinceLastEvent: Infinity
@@ -276,10 +272,10 @@ ${intervalGuidance}
     const lastEvent = history[history.length - 1];
 
     // 最近表现评估
-    let recentPerformance = '一般';
-    if (recentCorrectCount === 5) recentPerformance = '优秀';
-    else if (recentCorrectCount >= 3) recentPerformance = '良好';
-    else if (recentCorrectCount <= 1) recentPerformance = '较弱';
+    let recentPerformance = 'Average';
+    if (recentCorrectCount === 5) recentPerformance = 'Excellent';
+    else if (recentCorrectCount >= 3) recentPerformance = 'Good';
+    else if (recentCorrectCount <= 1) recentPerformance = 'Weak';
 
     // 距离上次学习的小时数
     const timeSinceLastEvent = (Date.now() - lastEvent.timestamp) / (1000 * 60 * 60);
@@ -328,12 +324,12 @@ ${intervalGuidance}
           difficulty: ['easy', 'medium', 'hard'].includes(parsed.difficulty)
             ? parsed.difficulty
             : 'medium',
-          reasoning: parsed.reasoning || '基于AI个性化预测',
-          suggestedAction: parsed.suggestedAction || '按时复习巩固记忆'
+          reasoning: parsed.reasoning || 'AI-based personalized review prediction',
+          suggestedAction: parsed.suggestedAction || 'Review on time to strengthen retention'
         };
       }
     } catch (error) {
-      console.error('解析AI预测失败:', error);
+      console.error('Failed to parse AI prediction:', error);
     }
 
     // 返回默认值
@@ -341,8 +337,8 @@ ${intervalGuidance}
       interval: 24,
       confidence: 0.5,
       difficulty: 'medium',
-      reasoning: '使用默认复习间隔',
-      suggestedAction: '建议按时复习'
+      reasoning: 'Using the default review interval',
+      suggestedAction: 'Review on schedule'
     };
   }
 
@@ -375,10 +371,10 @@ ${intervalGuidance}
       wordId,
       nextReviewAt,
       interval: Math.round(interval),
-      confidence: 0.6, // SM-2算法的置信度较低
-      reasoning: '使用传统SM-2算法（AI未配置或失败）',
+      confidence: 0.6,
+      reasoning: 'Using the traditional SM-2 fallback',
       difficulty: correctCount >= 3 ? 'easy' : correctCount >= 1 ? 'medium' : 'hard',
-      suggestedAction: '建议按计划复习'
+      suggestedAction: 'Follow the planned review schedule'
     };
   }
 
@@ -400,7 +396,7 @@ ${intervalGuidance}
     try {
       return await this.predictBatchWithAI(items, profile);
     } catch (error) {
-      console.error('批量AI预测失败，回退到逐个预测:', error);
+      console.error('Batch AI prediction failed. Falling back to per-word prediction:', error);
       // 降级到逐个预测
       const results: AdaptiveReviewPlan[] = [];
       for (const item of items) {
@@ -430,31 +426,31 @@ ${intervalGuidance}
       };
     });
 
-    const prompt = `批量预测以下${items.length}个单词的最佳复习间隔（小时）：
+    const prompt = `Predict the best review interval in hours for these ${items.length} words.
 
-**用户画像：**
-- 最佳复习间隔：${profile.memoryPattern.optimalReviewInterval}小时
-- 记忆稳定性：${profile.memoryPattern.memoryStability.toFixed(2)}
-- 学习时段：${profile.behaviorPattern.preferredStudyTime}
+**Learner profile**
+- Best review interval: ${profile.memoryPattern.optimalReviewInterval} hours
+- Memory stability: ${profile.memoryPattern.memoryStability.toFixed(2)}
+- Preferred study window: ${profile.behaviorPattern.preferredStudyTime}
 
-**单词列表：**
-${wordsSummary.map((w, i) => `${i + 1}. ${w.wordId}: ${w.attempts}次学习, 正确率${w.correctRate}, ${w.recent}`).join('\n')}
+**Words**
+${wordsSummary.map((w, i) => `${i + 1}. ${w.wordId}: ${w.attempts} attempt(s), accuracy ${w.correctRate}, recent performance ${w.recent}`).join('\n')}
 
-请为每个单词预测最佳复习间隔，返回JSON数组格式：
+Return a JSON array like this:
 [
   {
-    "wordId": "单词ID",
-    "interval": 复习间隔（小时）,
+    "wordId": "word id",
+    "interval": integer hours,
     "difficulty": "easy" | "medium" | "hard"
   }
 ]
 
-只返回JSON数组，不要其他内容。`;
+Return the JSON array only.`;
 
     const response = await aiService.chat([
       {
         role: 'system',
-        content: `你是记忆科学专家。批量预测复习间隔，返回JSON数组格式。`
+        content: `You are a memory-science expert. Predict review intervals in batch and return a JSON array only.`
       },
       {
         role: 'user',
@@ -492,14 +488,14 @@ ${wordsSummary.map((w, i) => `${i + 1}. ${w.wordId}: ${w.attempts}次学习, 正
             nextReviewAt: Date.now() + (interval * 60 * 60 * 1000),
             interval,
             confidence: 0.7,
-            reasoning: 'AI批量预测',
-            suggestedAction: '建议按时复习',
+            reasoning: 'Batch AI review prediction',
+            suggestedAction: 'Review on schedule',
             difficulty: pred.difficulty || 'medium'
           };
         });
       }
     } catch (error) {
-      console.error('解析批量预测失败:', error);
+      console.error('Failed to parse batch prediction:', error);
     }
 
     // 解析失败，返回默认计划

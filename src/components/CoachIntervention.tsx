@@ -1,7 +1,7 @@
 /**
- * AI教练干预提示组件
+ * AI coach intervention card.
  *
- * 显示AI学习教练的建议和干预
+ * Displays recommendations and interventions from the learning coach.
  */
 
 import { motion, AnimatePresence } from 'framer-motion'
@@ -91,12 +91,12 @@ export default function CoachInterventionCard({
         className={`${styles.bg} ${styles.border} border-2 rounded-xl p-5 shadow-lg`}
       >
         <div className="flex items-start gap-4">
-          {/* 图标 */}
+          {/* Icon */}
           <div className={`${styles.iconBg} ${styles.iconColor} p-3 rounded-xl flex-shrink-0`}>
             {getIcon()}
           </div>
 
-          {/* 内容 */}
+          {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
@@ -108,7 +108,7 @@ export default function CoachInterventionCard({
                 </p>
               </div>
 
-              {/* 关闭按钮 */}
+              {/* Close button */}
               <button
                 onClick={onDismiss}
                 className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
@@ -117,7 +117,7 @@ export default function CoachInterventionCard({
               </button>
             </div>
 
-            {/* 操作按钮 */}
+            {/* Action button */}
             {intervention.actionable && intervention.actionLabel && (
               <div className="mt-3">
                 <button
@@ -135,12 +135,12 @@ export default function CoachInterventionCard({
           </div>
         </div>
 
-        {/* 优先级指示器 */}
+        {/* Priority indicator */}
         {intervention.priority === 'high' && (
           <div className="mt-3 pt-3 border-t border-gray-200/50">
             <div className="flex items-center gap-2 text-xs text-gray-500">
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-              <span>重要建议</span>
+              <span>High-priority suggestion</span>
             </div>
           </div>
         )}

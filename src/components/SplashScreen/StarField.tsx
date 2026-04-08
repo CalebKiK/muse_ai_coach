@@ -408,18 +408,18 @@ export default function StarFieldSplashScreen({ isReady, onEnter }: StarFieldPro
     convergeStartTimeRef.current = performance.now()
     soundEffects.play('enter') // 播放进入音效
 
-    // 爆炸动画完成后才真正进入
+    // Only enter the app after the explode animation completes.
     setTimeout(() => {
       onEnter()
     }, CONFIG.EXPLODE_DURATION)
   }, [onEnter])
 
-  // 加载文字
+  // Loading copy
   const loadingMessages = [
-    '正在收集知识的星辰...',
-    '正在构建记忆的星系...',
-    '正在点亮智慧的星空...',
-    '正在开启学习之旅...',
+    'Gathering the stars of knowledge...',
+    'Building your memory galaxy...',
+    'Lighting up a smarter study sky...',
+    'Preparing your learning journey...',
   ]
 
   const [messageIndex, setMessageIndex] = useState(0)
@@ -439,7 +439,7 @@ export default function StarFieldSplashScreen({ isReady, onEnter }: StarFieldPro
       className="fixed inset-0 z-50 overflow-hidden"
       style={{
         background: 'linear-gradient(to bottom right, #020617, #172554, #3b0764)',
-        // 提示浏览器优化渲染
+        // Hint to the browser that this layer should be optimized for rendering
         contain: 'layout style paint',
       }}
       initial={{ opacity: 0 }}
@@ -450,18 +450,18 @@ export default function StarFieldSplashScreen({ isReady, onEnter }: StarFieldPro
         transition: { duration: CONFIG.EXPLODE_DURATION / 1000 },
       }}
     >
-      {/* Canvas层 */}
+      {/* Canvas layer */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0"
         style={{
           mixBlendMode: 'screen',
-          // Canvas层不受React渲染影响
+          // The canvas renders independently from React updates
           willChange: 'transform',
         }}
       />
 
-      {/* 背景光晕 */}
+      {/* Background glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px]"
@@ -491,7 +491,7 @@ export default function StarFieldSplashScreen({ isReady, onEnter }: StarFieldPro
         />
       </div>
 
-      {/* 加载文字（仅在loading阶段显示） */}
+      {/* Loading text */}
       {phaseRef.current === 'loading' && (
         <motion.div
           className="absolute inset-0 flex flex-col items-center justify-center"
@@ -514,7 +514,7 @@ export default function StarFieldSplashScreen({ isReady, onEnter }: StarFieldPro
         </motion.div>
       )}
 
-      {/* 进入按钮（仅在ready阶段显示） */}
+      {/* Enter button */}
       <AnimatePresence>
         {showEnter && (
           <motion.div
@@ -524,7 +524,7 @@ export default function StarFieldSplashScreen({ isReady, onEnter }: StarFieldPro
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
           >
-            {/* Logo显示 */}
+            {/* Logo */}
             {logoLoaded && (
               <motion.div
                 className="mb-12"
@@ -550,7 +550,7 @@ export default function StarFieldSplashScreen({ isReady, onEnter }: StarFieldPro
               </motion.div>
             )}
 
-            {/* 按钮容器 - 启用指针事件 */}
+            {/* Button container */}
             <div className="pointer-events-auto">
               <motion.button
                 onClick={handleEnter}
@@ -567,7 +567,7 @@ export default function StarFieldSplashScreen({ isReady, onEnter }: StarFieldPro
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.3 }}
               >
-                {/* 按钮光晕 */}
+                {/* Button glow */}
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20"
                   animate={{
@@ -583,14 +583,14 @@ export default function StarFieldSplashScreen({ isReady, onEnter }: StarFieldPro
                   }}
                 />
 
-                {/* 按钮文字 */}
+                {/* Button label */}
                 <div className="relative flex items-center gap-3">
                   <span className="text-2xl font-bold text-white">
-                    ✨ 进入 Muse ✨
+                    ✨ Enter Muse ✨
                   </span>
                 </div>
 
-                {/* 持续发光效果（不是hover触发） */}
+                {/* Continuous glow */}
                 <motion.div
                   className="absolute inset-0 rounded-2xl"
                   style={{
@@ -608,7 +608,7 @@ export default function StarFieldSplashScreen({ isReady, onEnter }: StarFieldPro
               </motion.button>
             </div>
 
-            {/* 副标题 */}
+            {/* Subtitle */}
             <motion.p
               className="mt-6 text-sm font-medium text-purple-300/80 tracking-widest uppercase"
               initial={{ y: 20, opacity: 0 }}
@@ -616,13 +616,13 @@ export default function StarFieldSplashScreen({ isReady, onEnter }: StarFieldPro
               transition={{ delay: 0.4, duration: 0.3 }}
               style={{ willChange: 'transform, opacity' }}
             >
-              汇聚知识的宇宙
+              Where knowledge comes together
             </motion.p>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 底部装饰线 */}
+      {/* Bottom accent line */}
       <motion.div
         className="absolute bottom-0 left-0 right-0 h-[1px]"
         style={{

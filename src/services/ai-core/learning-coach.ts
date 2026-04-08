@@ -118,13 +118,13 @@ export class LearningCoach {
         id: `fatigue-${Date.now()}`,
         type: 'rest',
         priority: 'high',
-        title: '检测到学习疲劳',
+        title: 'Study fatigue detected',
         message: this.generateFatigueMessage(fatigueScore, sessionMinutes, accuracy),
         actionable: true,
-        actionLabel: '休息一会',
+        actionLabel: 'Take a break',
         action: () => {
           // 建议休息15分钟
-          console.log('建议休息15分钟')
+          console.log('Suggesting a 15-minute break')
         },
         timestamp: Date.now(),
       }
@@ -138,11 +138,11 @@ export class LearningCoach {
    */
   private generateFatigueMessage(fatigueScore: number, sessionMinutes: number, accuracy: number): string {
     if (fatigueScore >= 8) {
-      return `你已经学习了${Math.floor(sessionMinutes)}分钟，正确率降至${(accuracy * 100).toFixed(0)}%。强烈建议休息15-30分钟，让大脑充分恢复。`
+      return `You have been studying for ${Math.floor(sessionMinutes)} minutes and your accuracy has dropped to ${(accuracy * 100).toFixed(0)}%. A 15-30 minute break is strongly recommended.`
     } else if (fatigueScore >= 6) {
-      return `学习时长已超过${Math.floor(sessionMinutes)}分钟，检测到注意力下降。建议休息10分钟，喝杯水放松一下。`
+      return `You have been studying for more than ${Math.floor(sessionMinutes)} minutes and your focus appears to be slipping. Try a 10-minute break and reset.`
     } else {
-      return `连续学习${Math.floor(sessionMinutes)}分钟了，适当休息可以提高记忆效果哦！`
+      return `You have been studying continuously for ${Math.floor(sessionMinutes)} minutes. A short break could improve retention.`
     }
   }
 
@@ -165,12 +165,12 @@ export class LearningCoach {
         id: `difficulty-${Date.now()}`,
         type: 'difficulty',
         priority: 'high',
-        title: '遇到学习困难',
+        title: 'Learning difficulty detected',
         message: this.generateDifficultyMessage(accuracy, metrics.consecutiveIncorrect),
         actionable: true,
-        actionLabel: '降低难度',
+        actionLabel: 'Lower difficulty',
         action: () => {
-          console.log('建议降低难度或切换学习模式')
+          console.log('Suggesting lower difficulty or a different study mode')
         },
         timestamp: Date.now(),
       }
@@ -184,11 +184,11 @@ export class LearningCoach {
    */
   private generateDifficultyMessage(accuracy: number, consecutiveErrors: number): string {
     if (consecutiveErrors >= 4) {
-      return `连续${consecutiveErrors}个单词没记住，这很正常！建议降低学习目标或休息一下，明天继续。`
+      return `You missed ${consecutiveErrors} words in a row, which is completely normal. Try lowering the load or taking a break before continuing.`
     } else if (accuracy < 0.4) {
-      return `当前正确率${(accuracy * 100).toFixed(0)}%，这些单词可能对你来说难度较高。建议先复习简单词汇建立信心。`
+      return `Your current accuracy is ${(accuracy * 100).toFixed(0)}%. These words may be a bit too difficult right now, so try reviewing easier vocabulary first.`
     } else {
-      return `检测到学习困难，不要气馁！每个学习者都会遇到瓶颈。建议切换到复习模式巩固已学内容。`
+      return `You seem to be hitting a rough patch. That happens to every learner, so try switching to review mode to reinforce what you already know.`
     }
   }
 
@@ -210,8 +210,8 @@ export class LearningCoach {
         id: `flow-${Date.now()}`,
         type: 'achievement',
         priority: 'low',
-        title: '完美的心流状态！',
-        message: `你的学习状态非常好！正确率${(accuracy * 100).toFixed(0)}%，节奏适中。保持这个状态，继续加油！`,
+        title: 'You are in a strong flow state!',
+        message: `Your study rhythm looks excellent. Accuracy is ${(accuracy * 100).toFixed(0)}% and the pace is balanced. Keep going.`,
         actionable: false,
         timestamp: Date.now(),
       }
@@ -222,8 +222,8 @@ export class LearningCoach {
         id: `streak-${Date.now()}`,
         type: 'achievement',
         priority: 'low',
-        title: `连续答对${metrics.consecutiveCorrect}个！`,
-        message: `太棒了！你已经连续答对${metrics.consecutiveCorrect}个单词，这说明你对这类词掌握得很好。可以尝试稍微增加难度。`,
+        title: `${metrics.consecutiveCorrect} correct in a row!`,
+        message: `Great work. You have answered ${metrics.consecutiveCorrect} words correctly in a row, which suggests strong mastery in this area.`,
         actionable: false,
         timestamp: Date.now(),
       }
@@ -245,8 +245,8 @@ export class LearningCoach {
         id: `milestone-10-${Date.now()}`,
         type: 'achievement',
         priority: 'medium',
-        title: '已学习10个单词！',
-        message: `很棒的开始！继续保持这个节奏。${this.getEncouragement()}`,
+        title: '10 words completed',
+        message: `Strong start. Keep this pace going. ${this.getEncouragement()}`,
         actionable: false,
         timestamp: Date.now(),
       }
@@ -257,8 +257,8 @@ export class LearningCoach {
         id: `milestone-20-${Date.now()}`,
         type: 'achievement',
         priority: 'medium',
-        title: '已学习20个单词！',
-        message: `今天的学习效率很高！${this.getEncouragement()}`,
+        title: '20 words completed',
+        message: `You are learning efficiently today. ${this.getEncouragement()}`,
         actionable: false,
         timestamp: Date.now(),
       }
@@ -269,8 +269,8 @@ export class LearningCoach {
         id: `milestone-50-${Date.now()}`,
         type: 'achievement',
         priority: 'medium',
-        title: '已学习50个单词！',
-        message: `惊人的成就！今天已经学习了50个单词，大大超过了许多学习者的日常目标。`,
+        title: '50 words completed',
+        message: `That is an impressive session. You have already studied 50 words today.`,
         actionable: false,
         timestamp: Date.now(),
       }
@@ -282,8 +282,8 @@ export class LearningCoach {
         id: `speed-${Date.now()}`,
         type: 'achievement',
         priority: 'low',
-        title: '学习速度飞快！',
-        message: `你的学习速度达到了每分钟${wordsPerMinute.toFixed(1)}个单词，远超平均水平。不过记得要保证质量哦！`,
+        title: 'Fast learning pace',
+        message: `You are moving at ${wordsPerMinute.toFixed(1)} words per minute, which is well above average. Keep quality high as you go.`,
         actionable: false,
         timestamp: Date.now(),
       }
@@ -297,11 +297,11 @@ export class LearningCoach {
    */
   private getEncouragement(): string {
     const encouragements = [
-      '学习如逆水行舟，不进则退。加油！',
-      '每一个单词的积累，都让你离目标更近一步。',
-      '坚持就是胜利，你正在建立强大的词汇网络！',
-      '相信过程，结果自然会来。',
-      '你的努力终将得到回报，继续前进！',
+      'Small, steady progress adds up quickly.',
+      'Every word you learn moves you closer to your goal.',
+      'Consistency wins. You are building a strong vocabulary network.',
+      'Trust the process and let the results follow.',
+      'Your effort will pay off. Keep moving forward.',
     ]
     return encouragements[Math.floor(Math.random() * encouragements.length)]
   }

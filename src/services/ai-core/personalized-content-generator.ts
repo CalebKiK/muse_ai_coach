@@ -306,33 +306,33 @@ export class PersonalizedContentGenerator {
     let styleGuidance = '';
     switch (style) {
       case 'visual':
-        styleGuidance = '例句应包含生动的场景描述,便于在脑海中形成画面';
+        styleGuidance = 'The sentence should include vivid scene-setting details that are easy to picture.';
         break;
       case 'linguistic':
-        styleGuidance = '例句应展示词汇的语法用法和搭配';
+        styleGuidance = 'The sentence should clearly show grammar, usage, and common collocations.';
         break;
       case 'contextual':
-        styleGuidance = '例句应提供真实的使用场景和上下文';
+        styleGuidance = 'The sentence should provide realistic context and a believable usage scenario.';
         break;
     }
 
-    return `为单词生成例句:
+    return `Generate an example sentence for this word.
 
-**单词**: ${word}
-**释义**: ${definition}
-**风格要求**: ${styleGuidance}
+**Word**: ${word}
+**Definition**: ${definition}
+**Style guidance**: ${styleGuidance}
 
-请生成一个英语例句,要求:
-1. 句子自然地道
-2. 展示单词的实际用法
-3. 难度适中
+Requirements:
+1. The sentence must sound natural and native-like.
+2. It should show practical real-world usage.
+3. Keep the difficulty moderate.
 4. ${styleGuidance}
 
-严格按照以下JSON格式返回:
+Return valid JSON in exactly this shape:
 {
-  "sentence": "英语例句",
-  "translation": "中文翻译",
-  "scenario": "使用场景描述",
+  "sentence": "English example sentence",
+  "translation": "English-friendly learner translation or paraphrase",
+  "scenario": "short usage scenario description",
   "difficulty": "beginner" | "intermediate" | "advanced",
   "style": "visual" | "linguistic" | "contextual"
 }`;
@@ -344,27 +344,27 @@ export class PersonalizedContentGenerator {
   private buildMemoryTipPrompt(request: ContentGenerationRequest, technique: GeneratedMemoryTip['technique']): string {
     const { word, definition, profile } = request;
     const techniqueNames = {
-      association: '联想记忆法',
-      wordRoot: '词根词缀法',
-      scene: '场景记忆法',
-      story: '故事记忆法',
-      mnemonic: '助记符法'
+      association: 'association method',
+      wordRoot: 'word root method',
+      scene: 'scene-based memory',
+      story: 'story method',
+      mnemonic: 'mnemonic method'
     };
 
-    return `为单词生成记忆技巧:
+    return `Generate a memory technique for this word.
 
-**单词**: ${word}
-**释义**: ${definition}
-**用户词汇量**: ${profile.knowledgeGraph.vocabularySize}词
-**技巧类型**: ${techniqueNames[technique]}
+**Word**: ${word}
+**Definition**: ${definition}
+**Learner vocabulary size**: ${profile.knowledgeGraph.vocabularySize} words
+**Technique type**: ${techniqueNames[technique]}
 
-请基于${techniqueNames[technique]}生成记忆技巧,帮助用户快速记住这个单词。
+Create a helpful technique based on the ${techniqueNames[technique]} to help the learner remember the word quickly.
 
-严格按照以下JSON格式返回:
+Return valid JSON in exactly this shape:
 {
   "technique": "${technique}",
-  "title": "技巧标题(简短)",
-  "content": "详细的记忆技巧说明",
+  "title": "short title",
+  "content": "detailed memory tip explanation",
   "effectiveness": 0.8,
   "estimatedTime": 5
 }`;
@@ -376,31 +376,31 @@ export class PersonalizedContentGenerator {
   private buildExplanationPrompt(request: ContentGenerationRequest, difficulty: 'beginner' | 'intermediate' | 'advanced'): string {
     const { word, definition } = request;
     const difficultyGuidance = {
-      beginner: '使用简单的中文释义,避免复杂的英语术语',
-      intermediate: '使用简单的英语释义+中文辅助',
-      advanced: '使用纯英语释义,包含同义词和反义词'
+      beginner: 'Use very simple English and avoid technical wording.',
+      intermediate: 'Use clear English with slightly richer vocabulary and light scaffolding.',
+      advanced: 'Use fully English explanations and include synonyms and antonyms.'
     };
 
-    return `为单词生成分级释义:
+    return `Generate a level-appropriate explanation for this word.
 
-**单词**: ${word}
-**原始释义**: ${definition}
-**难度级别**: ${difficulty}
-**要求**: ${difficultyGuidance[difficulty]}
+**Word**: ${word}
+**Source definition**: ${definition}
+**Difficulty level**: ${difficulty}
+**Guidance**: ${difficultyGuidance[difficulty]}
 
-请生成适合该难度的释义内容,包括:
-1. 解释说明
-2. 同义词(2-3个)
-3. 反义词(1-2个)
-4. 常用搭配(2-3个)
+Include:
+1. A definition or explanation
+2. 2-3 synonyms
+3. 1-2 antonyms
+4. 2-3 useful collocations
 
-严格按照以下JSON格式返回:
+Return valid JSON in exactly this shape:
 {
-  "definition": "释义内容",
+  "definition": "definition content",
   "difficulty": "${difficulty}",
-  "synonyms": ["同义词1", "同义词2"],
-  "antonyms": ["反义词1"],
-  "collocations": ["搭配1", "搭配2"]
+  "synonyms": ["synonym 1", "synonym 2"],
+  "antonyms": ["antonym 1"],
+  "collocations": ["collocation 1", "collocation 2"]
 }`;
   }
 
@@ -408,65 +408,65 @@ export class PersonalizedContentGenerator {
    * 获取例句系统提示词
    */
   private getExampleSystemPrompt(style: 'visual' | 'linguistic' | 'contextual'): string {
-    return `你是一个专业的英语教学专家,擅长创作${style === 'visual' ? '生动形象' : style === 'linguistic' ? '语法精准' : '情境真实'}的英语例句。
+    return `You are an English teaching expert who writes ${style === 'visual' ? 'vivid and image-rich' : style === 'linguistic' ? 'usage-focused and grammar-aware' : 'realistic and context-rich'} example sentences.
 
-你的任务是根据单词和学习者的认知风格,生成个性化的例句。
+Your task is to generate a personalized example sentence based on the target word and the learner's cognitive style.
 
-要求:
-1. 例句必须自然地道,符合英语母语者的使用习惯
-2. 例句难度要适中,既不太简单也不太复杂
-3. 例句要能帮助学习者理解单词的实际用法
-4. ${style === 'visual' ? '例句应包含生动的场景描述,便于在脑海中形成画面' : ''}
-  ${style === 'linguistic' ? '例句应展示词汇的语法用法和搭配' : ''}
-  ${style === 'contextual' ? '例句应提供真实的使用场景和上下文' : ''}
+Requirements:
+1. The sentence must sound natural to native speakers.
+2. Keep the difficulty moderate.
+3. Make the practical meaning and usage clear.
+4. ${style === 'visual' ? 'Include scene-setting details that are easy to visualize.' : ''}
+  ${style === 'linguistic' ? 'Show grammar, syntax, and collocation naturally.' : ''}
+  ${style === 'contextual' ? 'Provide believable context and a realistic situation.' : ''}
 
-输出格式: 严格按照JSON格式返回,不要包含其他内容。`;
+Return JSON only.`;
   }
 
   /**
    * 获取记忆技巧系统提示词
    */
   private getMemoryTipSystemPrompt(): string {
-    return `你是一个记忆科学专家,精通各种记忆技巧和方法。
+    return `You are a memory-science expert who specializes in practical vocabulary retention techniques.
 
-你的任务是为英语单词生成有效的记忆技巧,帮助学习者快速掌握词汇。
+Your task is to generate an effective memory tip for an English word.
 
-技巧类型:
-1. **联想记忆法**: 通过图像、声音、意义等建立联系
-2. **词根词缀法**: 分析词根、前缀、后缀的含义
-3. **场景记忆法**: 将单词放入具体场景中记忆
-4. **故事记忆法**: 用故事情节串联单词
-5. **助记符法**: 创建首字母缩写或韵律助记
+Technique families:
+1. **Association**: link the word to images, sounds, or meaning
+2. **Word roots**: use roots, prefixes, and suffixes
+3. **Scene-based memory**: place the word in a vivid situation
+4. **Story method**: connect the word to a short narrative
+5. **Mnemonic method**: use acronyms, rhythm, or memorable cues
 
-要求:
-1. 技巧要简单易用
-2. 技巧要科学有效
-3. 技巧要生动有趣
-4. 提供预计掌握时间
+Requirements:
+1. The technique must be easy to use.
+2. It should be scientifically sensible and memorable.
+3. Make it vivid and engaging.
+4. Include an estimated time to learn it.
 
-输出格式: 严格按照JSON格式返回,不要包含其他内容。`;
+Return JSON only.`;
   }
 
   /**
    * 获取释义系统提示词
    */
   private getExplanationSystemPrompt(): string {
-    return `你是一个专业的英语词典编纂专家,擅长编写不同难度的词汇释义。
+    return `You are an English lexicography expert who writes learner-friendly definitions at multiple difficulty levels.
 
-你的任务是根据学习者的词汇量水平,生成适合的释义内容。
+Your task is to generate explanation content that matches the learner's vocabulary level.
 
-难度级别:
-1. **beginner**: 使用简单中文释义,避免复杂术语
-2. **intermediate**: 简单英语+中文辅助
-3. **advanced**: 纯英语释义,包含同义词反义词
+Difficulty levels:
+1. **beginner**: very simple English
+2. **intermediate**: clear English with moderate detail
+3. **advanced**: fuller English explanations with richer vocabulary
 
-要求:
-1. 释义准确清晰
-2. 同义词要地道常用
-3. 搭配要实用高频
-4. 难度要符合目标水平
+Requirements:
+1. Definitions must be accurate and clear.
+2. Synonyms should be natural and common.
+3. Collocations should be practical and high-frequency.
+4. The output must match the target difficulty.
 
-输出格式: 严格按照JSON格式返回,不要包含其他内容。`;
+Return JSON only.`;
   }
 
   /**
@@ -489,14 +489,14 @@ export class PersonalizedContentGenerator {
         };
       }
     } catch (error) {
-      console.error('解析例句失败:', error);
+      console.error('Failed to parse example sentence:', error);
     }
 
     // 返回默认值
     return {
       sentence: `This is an example sentence with ${content}.`,
-      translation: '这是一个例句。',
-      scenario: '通用场景',
+      translation: 'This is an example sentence.',
+      scenario: 'General use case',
       difficulty: 'intermediate',
       style
     };
@@ -515,21 +515,21 @@ export class PersonalizedContentGenerator {
         const parsed = JSON.parse(jsonMatch[0]);
         return {
           technique: parsed.technique || 'association',
-          title: parsed.title || '记忆技巧',
+          title: parsed.title || 'Memory tip',
           content: parsed.content || '',
           effectiveness: parsed.effectiveness || 0.7,
           estimatedTime: parsed.estimatedTime || 5
         };
       }
     } catch (error) {
-      console.error('解析记忆技巧失败:', error);
+      console.error('Failed to parse memory tip:', error);
     }
 
     // 返回默认值
     return {
       technique: 'association',
-      title: '联想记忆法',
-      content: '通过联想相关的图像或场景来记忆这个单词。',
+      title: 'Association method',
+      content: 'Remember this word by connecting it to a related image or scene.',
       effectiveness: 0.6,
       estimatedTime: 5
     };
@@ -555,7 +555,7 @@ export class PersonalizedContentGenerator {
         };
       }
     } catch (error) {
-      console.error('解析释义失败:', error);
+      console.error('Failed to parse explanation:', error);
     }
 
     // 返回默认值
