@@ -1,23 +1,23 @@
-# Muse - AI 驱动的英语单词学习助手
+# Muse - AI-Powered English Vocabulary Learning Assistant
 
 <p align="center">
   <img src="public/Muse.png" alt="Muse Logo" width="128" height="128">
 </p>
 
 <p align="center">
-  <strong>AI 驱动的智能英语学习助手</strong>
+  <strong>An AI-driven English vocabulary learning assistant</strong>
 </p>
 
 <p align="center">
-  融合先进 AI 技术与科学学习方法,让单词学习更高效、更智能
+  Combining modern AI workflows with evidence-based study methods for smarter vocabulary learning
 </p>
 
 <p align="center">
-  <a href="./README_EN.md">English</a> •
-  <a href="#功能特性">功能特性</a> •
-  <a href="#快速开始">快速开始</a> •
-  <a href="#ai-配置">AI 配置</a> •
-  <a href="#快捷键">快捷键</a>
+  <a href="./README_EN.md">Alternate README</a> •
+  <a href="#features">Features</a> •
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#ai-configuration">AI Configuration</a> •
+  <a href="#keyboard-shortcuts">Keyboard Shortcuts</a>
 </p>
 
 <p align="center">
@@ -30,196 +30,195 @@
 </p>
 
 <p align="center">
-  本项目由阿里云ESA提供加速、计算和保护
+  This project is accelerated, computed, and protected by Alibaba Cloud ESA
   <br>
   <img src="AlibabaESA.png" alt="Alibaba ESA" width="600">
 </p>
 
 ---
 
-## 📖 简介
+## 📖 Introduction
 
-**Muse** 是一款基于 Electron + React + TypeScript 开发的 **AI 驱动的智能英语单词学习助手**。它结合了先进的 AI 技术和科学的记忆算法,为用户提供个性化的学习体验。
+**Muse** is an Electron + React + TypeScript desktop app for English vocabulary learning. It combines AI-assisted workflows with structured review systems and vocabulary tools.
 
-### 核心特性
+### Core Highlights
 
-- 🧠 **AI 智能学习计划** - 根据你的目标和水平自动生成个性化学习方案
-- 📚 **科学记忆算法** - 基于 SM-2 艾宾浩斯遗忘曲线的间隔重复系统
-- 🤖 **AI 深度分析** - 提供词义解释、场景例句、记忆技巧
-- 🎯 **智能测验系统** - AI 根据你的词汇水平实时生成动态题目
-- 🎮 **游戏中心** - 通过字母连线游戏边玩边学,保存发现的单词
-- 📊 **可视化统计** - 学习进度、正确率、记忆曲线一目了然
-- ⌨️ **完整快捷键** - 高效的键盘操作,提升学习效率
-- 🔄 **自动更新检查** - 启动时自动检查更新,支持手动检查最新版本
+- 🧠 **AI study planning** for personalized learning paths
+- 📚 **Spaced repetition reviews** based on SM-2 principles
+- 🤖 **AI word analysis** for definitions, examples, and memory hooks
+- 🎯 **Quiz and challenge modes** driven by your vocabulary level
+- 🎮 **Word games** including letter-link gameplay
+- 📊 **Progress tracking** with review and study statistics
+- ⌨️ **Keyboard shortcuts** for fast learning workflows
+- 🔄 **Update checks** built into the desktop app
 
-## ✨ 功能特性
+## ✨ Features
 
-### 📚 学习功能
+### 📚 Learning
 
-| 功能 | 描述 |
+| Feature | Description |
 |------|------|
-| **单词学习** | 卡片翻转式学习,支持音标、释义、例句展示 |
-| **智能复习** | 基于 SM-2 算法,只在需要时复习即将遗忘的单词 |
-| **快速复习** | 一键复习所有学过的单词,不受算法限制 |
-| **单词测验** | 选择题、拼写题两种测验模式 |
-| **AI 测验** | AI 根据你的词库智能出题,难度自适应 |
-| **今日回顾** | 侧边栏显示今天所有学过的单词,支持跨会话查看 |
+| **Flashcard learning** | Flip-card study with phonetics, meanings, and examples |
+| **Smart review** | Review words when they are due instead of brute-force repetition |
+| **Quick review** | Revisit learned words on demand |
+| **Vocabulary quizzes** | Practice with multiple quiz modes |
+| **AI quizzes** | Generate adaptive questions from your word set |
+| **Today view** | See what you learned today across sessions |
 
-### 🤖 AI 智能功能
+### 🤖 AI Features
 
-| 功能 | 描述 |
+| Feature | Description |
 |------|------|
-| **AI 学习计划** | 分析你的水平和目标,自动生成个性化学习方案 |
-| **AI 智能分析** | 手动触发,提供词源、用法、易混淆词等深度解析 |
-| **AI 学习教练** | 提供个性化学习建议和进度分析 |
-| **AI 单词生成** | 根据主题自动生成单词并批量导入词库 |
-| **智能数据补全** | 自动检测并补充缺失的单词信息 |
+| **AI study plans** | Generate plans from level and goals |
+| **AI analysis** | Expand meanings, usage, and related context |
+| **AI coach** | Offer study suggestions and performance insights |
+| **AI word generation** | Create topical word sets for import |
+| **Data enrichment** | Fill in missing word details automatically |
 
-### 🎯 支持的 AI 服务
+### 🎯 Supported AI Providers
 
-| 提供商 | 支持模型 | API Key |
+| Provider | Models | API Key |
 |--------|---------|---------|
-| **OpenAI** | GPT-4o, GPT-4o-mini, Qwen, DeepSeek, 智谱AI 等 | ✅ 必需 |
-| **Claude** | Claude 3.5 Sonnet, Haiku 等 | ✅ 必需 |
-| **Gemini** | Gemini 1.5 Pro, Flash 等 | ✅ 必需 |
-| **Ollama** | Llama3, Mistral 等开源模型 | ❌ 不需要(本地运行) |
-| **自定义** | 任何 OpenAI 兼容 API | 视情况而定 |
+| **OpenAI** | GPT-4o, GPT-4o-mini, and compatible APIs | Required |
+| **Claude** | Claude family models | Required |
+| **Gemini** | Gemini family models | Required |
+| **Ollama** | Local open-source models | Not required |
+| **Custom** | Any OpenAI-compatible API | Depends on provider |
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 环境要求
+### Requirements
 
-- Node.js 18+
-- npm 或 yarn
+- Node.js 20+
+- npm
 
-### 安装
+### Install
 
 ```bash
-# 克隆项目
+# Clone the repo
 git clone https://github.com/Freakz3z/Muse.git
 
-# 进入目录
-cd Muse
+# Enter the project
+cd muse_ai_coach
 
-# 安装依赖
+# Install dependencies
 npm install
 ```
 
-### 开发模式
+### Development
 
 ```bash
 npm run electron:dev
 ```
 
-### 构建应用
+### Build
 
 ```bash
-# Web 版本
+# Web build
 npm run build:web
 
-# Electron 桌面版
+# Electron desktop build
 npm run electron:build
 ```
 
-构建完成后,安装包将在 `release` 目录中。
+Artifacts are generated in `release/`.
 
-## 🛠️ 技术栈
+## 🛠️ Tech Stack
 
-| 类别 | 技术 |
+| Category | Technology |
 |------|------|
-| **框架** | Electron 28 |
-| **UI 库** | React 18 |
-| **语言** | TypeScript 5.3 |
-| **构建工具** | Vite 5.0 |
-| **样式** | Tailwind CSS |
-| **状态管理** | Zustand |
-| **数据存储** | LocalForage (IndexedDB) |
-| **图表** | Recharts |
-| **动画** | Framer Motion |
-| **图标** | Lucide React |
+| **Desktop shell** | Electron |
+| **UI** | React |
+| **Language** | TypeScript |
+| **Build tool** | Vite |
+| **Styling** | Tailwind CSS |
+| **State** | Zustand |
+| **Storage** | LocalForage / IndexedDB |
+| **Charts** | Recharts |
+| **Animation** | Framer Motion |
+| **Icons** | Lucide React |
 
-## 🤖 AI 配置
+## 🤖 AI Configuration
 
-### 使用 OpenAI / Claude / Gemini
+### OpenAI / Claude / Gemini
 
-1. 进入 **设置** → **AI 智能服务**
-2. 选择服务商
-3. 填入 API Key
-4. 点击 **测试并保存**
+1. Open **Settings** → **AI Services**
+2. Choose a provider
+3. Enter the API key
+4. Click **Test & Save**
 
-### 使用 Ollama (免费、本地运行)
+### Ollama
 
-1. 安装 [Ollama](https://ollama.ai/)
-2. 下载模型: `ollama pull llama3`
-3. 在设置中选择 **Ollama**
-4. 默认地址: `http://localhost:11434`
-5. 无需 API Key,点击测试即可!
+1. Install [Ollama](https://ollama.ai/)
+2. Pull a model such as `ollama pull llama3`
+3. Select **Ollama** in Settings
+4. Use `http://localhost:11434`
+5. Test the connection
 
-## ⌨️ 快捷键
+## ⌨️ Keyboard Shortcuts
 
-### 全局快捷键
+### Global
 
-| 快捷键 | 功能 |
+| Shortcut | Function |
 |--------|------|
-| `Ctrl + Shift + M` | 显示/隐藏主窗口 |
-| `Alt + X` | 显示/隐藏悬浮查词窗(可自定义) |
+| `Ctrl + Shift + M` | Toggle the main window |
+| `Alt + X` | Toggle the floating lookup window |
 
-### 学习界面快捷键 (可自定义)
+### Learning
 
-| 快捷键 | 功能 | 说明 |
+| Shortcut | Function | Notes |
 |--------|------|------|
-| `Space` | 显示答案 / 返回当前学习 | 历史模式时返回 |
-| `D` | 认识 / 下一个 | 历史模式时下一个 |
-| `A` | 不认识 / 上一个 | 历史模式时上一个 |
-| `W` | AI 智能分析 | 需配置 AI |
-| `R` | 播放发音 | - |
+| `Space` | Reveal answer / return | Returns in history mode |
+| `D` | Know / next | Advances in history mode |
+| `A` | Don’t know / previous | Moves backward in history mode |
+| `W` | AI analysis | Requires AI setup |
+| `R` | Play pronunciation | - |
 
-### 复习界面快捷键 (可自定义)
+### Review
 
-| 快捷键 | 功能 |
+| Shortcut | Function |
 |--------|------|
-| `2` | 记住了 |
-| `3` | 有点难 |
-| `4` | 忘记了 |
+| `2` | Remembered |
+| `3` | A bit hard |
+| `4` | Forgot |
 
-> 💡 所有快捷键都可在设置中自定义!
+All shortcuts can be customized in Settings.
 
-## 🎨 界面特色
+## 🎨 UI Notes
 
-- 🎨 现代化卡片式设计
-- ✨ 流畅的翻转动画
-- 🌈 渐变色主题
-- 💜 AI 功能紫色系配色
-- 📱 响应式布局
-- 🎯 统一的学习/复习界面风格
-- 🪟 悬浮查词窗 - 快速查词,随时添加
-- 📋 精美的更新日志展示
+- Modern card-based design
+- Smooth flip animations
+- Gradient-based visual language
+- Responsive layouts
+- Unified learning and review flows
+- Floating lookup window for fast capture
+- Built-in update messaging
 
-## 📊 数据存储
+## 📊 Data
 
-- **本地存储**: 使用 IndexedDB,所有数据保存在本地
-- **数据安全**: 支持词库 JSON 导出/导入
-- **隐私保护**: 无需联网即可使用基础功能(AI 功能除外)
+- Local-first storage with IndexedDB
+- JSON import/export for vocabulary data
+- Core study features work offline
 
-## 🤝 参与贡献
+## 🤝 Contributing
 
-欢迎提交 Pull Request 或 Issue!
+Issues and pull requests are welcome.
 
-1. Fork 本项目
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启 Pull Request
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push the branch to your fork
+5. Open a pull request
 
-## 📄 开源协议
+## 📄 License
 
-本项目采用 [Apache 2.0](LICENSE) 开源协议。
+This project is licensed under [Apache 2.0](LICENSE).
 
-## 🙏 致谢
+## 🙏 Acknowledgements
 
-- 感谢所有贡献者
-- 感谢开源社区的支持
-- 感谢阿里云 ESA 提供的加速服务
+- Thanks to all contributors
+- Thanks to the open-source community
+- Thanks to Alibaba Cloud ESA for acceleration services
 
 ---
 

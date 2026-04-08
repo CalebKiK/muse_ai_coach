@@ -5,23 +5,23 @@ import https from 'https'
 let mainWindow: BrowserWindow | null = null
 let floatingWindow: BrowserWindow | null = null
 let tray: Tray | null = null
-let currentFloatingShortcut = 'Alt+X' // 默认快捷键
+let currentFloatingShortcut = 'Alt+X' // Default shortcut
 
 const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 const isDev = !!VITE_DEV_SERVER_URL
 
-// 简单的日志工具（Electron 主进程）
+// Lightweight logger for the Electron main process
 const log = {
   log: (...args: any[]) => isDev && console.log('[Main]', ...args),
   error: (...args: any[]) => console.error('[Main]', ...args),
 }
 
-// GitHub 仓库信息
+// GitHub release source
 const GITHUB_REPO = 'Freakz3z/Muse'
 const GITHUB_API = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`
 
 /**
- * 从 GitHub Releases API 获取最新版本信息
+ * Fetch the latest version metadata from GitHub Releases.
  */
 function fetchLatestRelease(): Promise<{ version: string; downloadUrl: string; notes: string } | null> {
   return new Promise((resolve) => {
@@ -42,28 +42,40 @@ function fetchLatestRelease(): Promise<{ version: string; downloadUrl: string; n
 
       res.on('end', () => {
         try {
+          if (res.statusCode && res.statusCode >= 400) {
+            log.error('Failed to fetch release metadata. HTTP status:', res.statusCode)
+            resolve(null)
+            return
+          }
+
           const release = JSON.parse(data)
-          const version = release.tag_name.replace(/^v/, '') // 移除 v 前缀
+          if (!release?.tag_name || !release?.html_url) {
+            log.error('Unexpected release payload:', release)
+            resolve(null)
+            return
+          }
+
+          const version = release.tag_name.replace(/^v/, '')
           const downloadUrl = release.html_url
           const notes = release.body || ''
 
-          log.log('获取到最新版本:', version)
+          log.log('Latest version found:', version)
           resolve({ version, downloadUrl, notes })
         } catch (error) {
-          log.error('解析版本信息失败:', error)
+          log.error('Failed to parse release metadata:', error)
           resolve(null)
         }
       })
     }).on('error', (error) => {
-      log.error('获取版本信息失败:', error)
+      log.error('Failed to fetch release metadata:', error)
       resolve(null)
     })
   })
 }
 
 /**
- * 比较版本号
- * 返回 true 如果 latestVersion > currentVersion
+ * Compare semantic version segments.
+ * Returns true when the latest version is newer than the current version.
  */
 function isNewerVersion(currentVersion: string, latestVersion: string): boolean {
   const current = currentVersion.split('.').map(Number)
@@ -79,7 +91,7 @@ function isNewerVersion(currentVersion: string, latestVersion: string): boolean 
 }
 
 /**
- * 检查更新
+ * Check for an available application update.
  */
 async function checkForUpdate(): Promise<{
   hasUpdate: boolean
@@ -89,7 +101,7 @@ async function checkForUpdate(): Promise<{
   notes?: string
 }> {
   const currentVersion = app.getVersion()
-  log.log('当前版本:', currentVersion)
+  log.log('Current version:', currentVersion)
 
   const release = await fetchLatestRelease()
 
@@ -108,14 +120,14 @@ async function checkForUpdate(): Promise<{
   }
 }
 
-// 获取图标路径，兼容开发和生产环境
+// Resolve the icon path for development and packaged builds.
 function getIconPath() {
+  const iconFile = process.platform === 'linux' ? 'Muse.png' : 'Muse.ico'
+
   if (app.isPackaged) {
-    // 生产环境：图标文件在 resources 目录
-    return path.join(process.resourcesPath, 'Muse.ico')
+    return path.join(process.resourcesPath, iconFile)
   } else {
-    // 开发环境：图标文件在 public 目录
-    return path.join(__dirname, '../public/Muse.ico')
+    return path.join(__dirname, `../public/${iconFile}`)
   }
 }
 
@@ -131,22 +143,19 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
-      // 添加内容安全策略
       webSecurity: true,
     },
     icon: getIconPath(),
-    show: false, // 先不显示，等加载完再显示
+    show: false,
   })
 
-  // 设置 CSP 头（根据环境调整）
+  // Set CSP headers based on the current environment.
   const isDev = !!VITE_DEV_SERVER_URL
   mainWindow.webContents.session.webRequest.onHeadersReceived((details: any, callback: any) => {
-    // 开发环境需要 unsafe-eval 支持 Vite HMR
     const scriptSrc = isDev
       ? "script-src 'self' 'unsafe-inline' 'unsafe-eval';"
       : "script-src 'self' 'unsafe-inline';"
 
-    // 允许连接到外部 API（AI 服务、词典 API 等）
     const connectSrc = isDev
       ? "connect-src 'self' ws://localhost:* ws://127.0.0.1:* http://localhost:* http://127.0.0.1:* https://api.openai.com https://dashscope.aliyuncs.com https://*.openai.com https://*.aliyuncs.com;"
       : "connect-src 'self' https://api.openai.com https://dashscope.aliyuncs.com https://*.openai.com https://*.aliyuncs.com;"
@@ -179,7 +188,6 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
   }
 
-  // 窗口准备好后显示，避免闪烁
   mainWindow.once('ready-to-show', () => {
     mainWindow?.show()
   })
@@ -194,25 +202,26 @@ function createTray() {
   const iconPath = getIconPath()
   const icon = nativeImage.createFromPath(iconPath)
 
-  // 确保图标不为空
   if (icon.isEmpty()) {
     console.error('Failed to load tray icon from:', iconPath)
+    return
   }
 
-  tray = new Tray(icon.resize({ width: 16, height: 16 }))
+  const trayIcon = process.platform === 'linux' ? icon : icon.resize({ width: 16, height: 16 })
+  tray = new Tray(trayIcon)
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: '打开主界面',
+      label: 'Open main window',
       click: () => mainWindow?.show()
     },
     {
-      label: '悬浮查词',
+      label: 'Toggle floating lookup',
       click: () => toggleFloatingWindow()
     },
     { type: 'separator' },
     {
-      label: '退出',
+      label: 'Quit',
       click: () => {
         mainWindow?.destroy()
         app.quit()
@@ -258,14 +267,13 @@ function createFloatingWindow() {
     show: false,
   })
 
-  // 设置 CSP 头
+  // Set CSP headers for the floating window.
   const isDev = !!VITE_DEV_SERVER_URL
   floatingWindow.webContents.session.webRequest.onHeadersReceived((details: any, callback: any) => {
     const scriptSrc = isDev
       ? "script-src 'self' 'unsafe-inline' 'unsafe-eval';"
       : "script-src 'self' 'unsafe-inline';"
 
-    // 允许连接到外部 API（AI 服务、词典 API 等）
     const connectSrc = isDev
       ? "connect-src 'self' ws://localhost:* ws://127.0.0.1:* http://localhost:* http://127.0.0.1:* https://api.openai.com https://dashscope.aliyuncs.com https://*.openai.com https://*.aliyuncs.com;"
       : "connect-src 'self' https://api.openai.com https://dashscope.aliyuncs.com https://*.openai.com https://*.aliyuncs.com;"
@@ -319,24 +327,21 @@ function toggleFloatingWindow() {
   }
 }
 
-// 注册悬浮窗快捷键
+// Register the global shortcut for the floating window.
 function registerFloatingShortcut(shortcut: string) {
-  // 先注销旧的快捷键
   if (currentFloatingShortcut) {
     globalShortcut.unregister(currentFloatingShortcut)
   }
 
-  // 注册新的快捷键
   const success = globalShortcut.register(shortcut, () => {
     toggleFloatingWindow()
   })
 
   if (success) {
     currentFloatingShortcut = shortcut
-    log.log(`悬浮窗快捷键已注册: ${shortcut}`)
+    log.log(`Floating shortcut registered: ${shortcut}`)
   } else {
-    log.error(`注册悬浮窗快捷键失败: ${shortcut}`)
-    // 恢复默认快捷键
+    log.error(`Failed to register floating shortcut: ${shortcut}`)
     globalShortcut.register('Alt+X', () => toggleFloatingWindow())
     currentFloatingShortcut = 'Alt+X'
   }
@@ -344,19 +349,17 @@ function registerFloatingShortcut(shortcut: string) {
   return success
 }
 
-// 获取当前快捷键
+// Read the current floating shortcut.
 function getCurrentFloatingShortcut() {
   return currentFloatingShortcut
 }
 
-// 防止应用多开
+// Prevent multiple instances of the application.
 const gotTheLock = app.requestSingleInstanceLock()
 
 if (!gotTheLock) {
-  // 如果获取锁失败，说明已经有一个实例在运行，退出当前实例
   app.quit()
 } else {
-  // 当第二个实例尝试启动时，聚焦到第一个实例的窗口
   app.on('second-instance', () => {
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore()
@@ -369,7 +372,7 @@ if (!gotTheLock) {
     createWindow()
     createTray()
 
-    // 全局快捷键：Ctrl+Shift+M 显示/隐藏主窗口
+    // Ctrl+Shift+M toggles the main window.
     globalShortcut.register('CommandOrControl+Shift+M', () => {
       if (mainWindow?.isVisible()) {
         mainWindow.hide()
@@ -378,22 +381,21 @@ if (!gotTheLock) {
       }
     })
 
-    // 注册默认的悬浮窗快捷键
+    // Register the default floating shortcut.
     registerFloatingShortcut('Alt+X')
 
-    // 启动时检查更新（静默检查，不阻塞启动）
+    // Run a non-blocking update check shortly after launch.
     setTimeout(async () => {
       const updateInfo = await checkForUpdate()
       if (updateInfo.hasUpdate && mainWindow) {
-        // 发送更新通知到渲染进程
         mainWindow.webContents.send('update-available', updateInfo)
-        log.log('发现新版本:', updateInfo.latestVersion)
+        log.log('Update available:', updateInfo.latestVersion)
       }
-    }, 3000) // 延迟3秒，避免影响启动速度
+    }, 3000)
   })
 }
 
-// IPC 通信处理
+// IPC handlers
 ipcMain.on('window-minimize', () => mainWindow?.minimize())
 ipcMain.on('window-maximize', () => {
   if (mainWindow?.isMaximized()) {
@@ -408,7 +410,7 @@ ipcMain.handle('get-window-state', () => ({
   isMaximized: mainWindow?.isMaximized() ?? false,
 }))
 
-// 悬浮窗相关 IPC
+// Floating window IPC
 ipcMain.on('floating-window-toggle', () => toggleFloatingWindow())
 ipcMain.on('floating-window-show', () => {
   if (!floatingWindow) {
@@ -420,36 +422,35 @@ ipcMain.on('floating-window-show', () => {
 })
 ipcMain.on('floating-window-hide', () => floatingWindow?.hide())
 
-// 数据更新通知 - 当悬浮窗添加单词后通知主窗口
+// Notify the main window when data changes in the floating window.
 ipcMain.on('floating-window-data-updated', () => {
-  // 向主窗口发送重新加载数据的信号
   if (mainWindow && mainWindow.webContents) {
     mainWindow.webContents.send('data-updated')
   }
 })
 
-// 在默认浏览器中打开外部链接
+// Open external links in the default browser.
 ipcMain.on('open-external', (_, url: string) => {
   shell.openExternal(url)
 })
 
-// 更新悬浮窗快捷键
+// Update the floating window shortcut.
 ipcMain.on('update-floating-shortcut', (_, shortcut: string) => {
   registerFloatingShortcut(shortcut)
 })
 
-// 获取当前悬浮窗快捷键
+// Get the current floating window shortcut.
 ipcMain.handle('get-floating-shortcut', () => {
   return getCurrentFloatingShortcut()
 })
 
-// 检查更新
+// Trigger an update check from the renderer.
 ipcMain.handle('check-for-update', async () => {
   const updateInfo = await checkForUpdate()
   return updateInfo
 })
 
-// 打开下载页面
+// Open the download page in the external browser.
 ipcMain.on('open-download-page', (_, url: string) => {
   shell.openExternal(url)
 })

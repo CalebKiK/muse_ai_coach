@@ -40,7 +40,7 @@ export default function WordCard({
   const handleAIGenerate = async (e: React.MouseEvent) => {
     e.stopPropagation()
     if (!aiService.isConfigured()) {
-      alert('请先在设置中配置 AI 服务')
+      alert('Please configure an AI service in Settings first.')
       return
     }
 
@@ -49,7 +49,7 @@ export default function WordCard({
       const tip = await aiService.generateMemoryTip(word.word)
       setMemoryTip(tip)
     } catch (error) {
-      console.error('AI 生成失败:', error)
+      console.error('Failed to generate AI memory tip:', error)
     } finally {
       setIsGenerating(false)
     }
@@ -67,17 +67,17 @@ export default function WordCard({
         transition={{ duration: 0.6, type: 'spring', stiffness: 100 }}
         onClick={handleFlip}
       >
-        {/* 正面 - 单词 */}
+        {/* Front side */}
         <div 
           className="absolute inset-0 w-full h-full backface-hidden"
           style={{ backfaceVisibility: 'hidden' }}
         >
           <div className="h-full bg-white rounded-3xl shadow-2xl shadow-blue-500/10 overflow-hidden border border-gray-100">
-            {/* 顶部装饰 */}
+            {/* Top accent */}
             <div className="h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
             
             <div className="p-8 flex flex-col items-center justify-center h-full">
-              {/* 单词 */}
+              {/* Word */}
               <motion.h1 
                 className="text-6xl font-bold text-gray-800 mb-6 tracking-tight"
                 initial={{ scale: 0.9 }}
@@ -87,7 +87,7 @@ export default function WordCard({
                 {word.word}
               </motion.h1>
               
-              {/* 音标和发音 */}
+              {/* Phonetics and pronunciation */}
               <div className="flex items-center gap-6 mb-8">
                 <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full">
                   <span className="text-xs text-gray-400 font-medium">US</span>
@@ -107,7 +107,7 @@ export default function WordCard({
                 </div>
               </div>
 
-              {/* 词频标签 */}
+              {/* Frequency badges */}
               <div className="flex items-center gap-2 mb-6">
                 {word.tags?.slice(0, 3).map((tag, i) => (
                   <span 
@@ -123,28 +123,28 @@ export default function WordCard({
                     word.frequency === 'medium' ? 'bg-yellow-50 text-yellow-600' :
                     'bg-gray-50 text-gray-600'
                   }`}>
-                    {word.frequency === 'high' ? '高频' : word.frequency === 'medium' ? '中频' : '低频'}
+                    {word.frequency === 'high' ? 'High frequency' : word.frequency === 'medium' ? 'Medium frequency' : 'Low frequency'}
                   </span>
                 )}
               </div>
 
-              {/* 提示 */}
+              {/* Hint */}
               <p className="text-gray-400 text-sm flex items-center gap-2">
                 <span className="w-8 h-0.5 bg-gray-200 rounded" />
-                点击卡片查看释义
+                Click the card to reveal the meaning
                 <span className="w-8 h-0.5 bg-gray-200 rounded" />
               </p>
             </div>
           </div>
         </div>
 
-        {/* 背面 - 释义 */}
+        {/* Back side */}
         <div 
           className="absolute inset-0 w-full h-full backface-hidden"
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
           <div className="h-full bg-white rounded-3xl shadow-2xl shadow-purple-500/10 overflow-hidden border border-gray-100">
-            {/* 顶部标题栏 */}
+            {/* Header */}
             <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-6 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -162,12 +162,12 @@ export default function WordCard({
               </div>
             </div>
 
-            {/* 标签页切换 */}
+            {/* Tabs */}
             <div className="flex border-b border-gray-100 px-4" onClick={e => e.stopPropagation()}>
               {[
-                { id: 'meaning', icon: BookOpen, label: '释义' },
-                { id: 'examples', icon: Lightbulb, label: '例句' },
-                { id: 'related', icon: Link, label: '相关' },
+                { id: 'meaning', icon: BookOpen, label: 'Meaning' },
+                { id: 'examples', icon: Lightbulb, label: 'Examples' },
+                { id: 'related', icon: Link, label: 'Related' },
               ].map(tab => (
                 <button
                   key={tab.id}
@@ -184,7 +184,7 @@ export default function WordCard({
               ))}
             </div>
 
-            {/* 内容区域 */}
+            {/* Content */}
             <div className="p-5 overflow-auto" style={{ maxHeight: '280px' }} onClick={e => e.stopPropagation()}>
               <AnimatePresence mode="wait">
                 {activeTab === 'meaning' && (
@@ -207,12 +207,12 @@ export default function WordCard({
                       </div>
                     ))}
 
-                    {/* AI 记忆技巧 */}
+                    {/* AI memory tip */}
                     {memoryTip ? (
                       <div className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
                         <div className="flex items-center gap-2 text-purple-600 text-sm font-medium mb-2">
                           <Brain className="w-4 h-4" />
-                          AI 记忆技巧
+                          AI memory tip
                         </div>
                         <p className="text-gray-700 text-sm">{memoryTip}</p>
                       </div>
@@ -227,7 +227,7 @@ export default function WordCard({
                         ) : (
                           <Sparkles className="w-4 h-4" />
                         )}
-                        {isGenerating ? 'AI 生成中...' : 'AI 生成记忆技巧'}
+                        {isGenerating ? 'Generating with AI...' : 'Generate memory tip with AI'}
                       </button>
                     )}
                   </motion.div>
@@ -249,7 +249,7 @@ export default function WordCard({
                       ))
                     ) : (
                       <div className="text-center py-8 text-gray-400">
-                        暂无例句
+                        No examples available yet
                       </div>
                     )}
                   </motion.div>
@@ -265,7 +265,7 @@ export default function WordCard({
                   >
                     {word.synonyms.length > 0 && (
                       <div>
-                        <h4 className="text-xs font-medium text-gray-500 uppercase mb-2">同义词</h4>
+                        <h4 className="text-xs font-medium text-gray-500 uppercase mb-2">Synonyms</h4>
                         <div className="flex flex-wrap gap-2">
                           {word.synonyms.map((syn, i) => (
                             <span key={i} className="px-3 py-1 bg-green-50 text-green-700 text-sm rounded-full">
@@ -278,7 +278,7 @@ export default function WordCard({
                     
                     {word.antonyms.length > 0 && (
                       <div>
-                        <h4 className="text-xs font-medium text-gray-500 uppercase mb-2">反义词</h4>
+                        <h4 className="text-xs font-medium text-gray-500 uppercase mb-2">Antonyms</h4>
                         <div className="flex flex-wrap gap-2">
                           {word.antonyms.map((ant, i) => (
                             <span key={i} className="px-3 py-1 bg-red-50 text-red-700 text-sm rounded-full">
@@ -291,7 +291,7 @@ export default function WordCard({
 
                     {word.collocations.length > 0 && (
                       <div>
-                        <h4 className="text-xs font-medium text-gray-500 uppercase mb-2">常见搭配</h4>
+                        <h4 className="text-xs font-medium text-gray-500 uppercase mb-2">Common collocations</h4>
                         <div className="flex flex-wrap gap-2">
                           {word.collocations.map((col, i) => (
                             <span key={i} className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full">
@@ -304,7 +304,7 @@ export default function WordCard({
 
                     {word.rootAnalysis && (
                       <div className="p-3 bg-amber-50 rounded-xl border border-amber-100">
-                        <h4 className="text-xs font-medium text-amber-700 uppercase mb-2">词根分析</h4>
+                        <h4 className="text-xs font-medium text-amber-700 uppercase mb-2">Root analysis</h4>
                         <p className="text-gray-700 text-sm">{word.rootAnalysis}</p>
                       </div>
                     )}

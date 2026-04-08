@@ -21,7 +21,7 @@ export function UpdateToast({ updateInfo, onClose }: UpdateToastProps) {
   useEffect(() => {
     if (updateInfo?.hasUpdate) {
       setIsVisible(true)
-      // 10秒后自动关闭
+      // Auto-dismiss after 10 seconds
       const timer = setTimeout(() => {
         setIsVisible(false)
         setTimeout(onClose, 300)
@@ -52,22 +52,22 @@ export function UpdateToast({ updateInfo, onClose }: UpdateToastProps) {
           className="fixed top-6 left-1/2 -translate-x-1/2 z-50 max-w-lg w-full px-4"
         >
           <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 dark:from-blue-700 dark:via-purple-700 dark:to-pink-600 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl">
-            {/* 闪光装饰 */}
+            {/* Decorative glow */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
-            {/* 通知内容 */}
+            {/* Content */}
             <div className="relative p-5">
               <div className="flex items-start gap-4">
-                {/* 图标 */}
+                {/* Icon */}
                 <div className="flex-shrink-0 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
                   <Sparkles className="w-6 h-6 text-white" />
                 </div>
 
-                {/* 内容 */}
+                {/* Text */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1.5">
                     <h3 className="text-base font-bold text-white">
-                      发现新版本 🎉
+                      New version available 🎉
                     </h3>
                     <motion.span
                       initial={{ scale: 0 }}
@@ -79,7 +79,7 @@ export function UpdateToast({ updateInfo, onClose }: UpdateToastProps) {
                     </motion.span>
                   </div>
                   <p className="text-sm text-blue-100 mb-3">
-                    当前版本 v{updateInfo.currentVersion} · 有新版本可用
+                    Current version v{updateInfo.currentVersion} · Update ready to install
                   </p>
                   <div className="flex items-center gap-2">
                     <button
@@ -87,7 +87,7 @@ export function UpdateToast({ updateInfo, onClose }: UpdateToastProps) {
                       className="inline-flex items-center gap-2 px-4 py-2 bg-white text-purple-600 rounded-xl text-sm font-semibold hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg"
                     >
                       <Download className="w-4 h-4" />
-                      立即更新
+                      Update now
                     </button>
                     <button
                       onClick={() => {
@@ -95,7 +95,7 @@ export function UpdateToast({ updateInfo, onClose }: UpdateToastProps) {
                         setTimeout(onClose, 300)
                       }}
                       className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all"
-                      title="稍后提醒"
+                      title="Remind me later"
                     >
                       <X className="w-5 h-5" />
                     </button>
@@ -104,7 +104,7 @@ export function UpdateToast({ updateInfo, onClose }: UpdateToastProps) {
               </div>
             </div>
 
-            {/* 进度条装饰 */}
+            {/* Progress bar */}
             <div className="h-1.5 bg-white/20 backdrop-blur-sm">
               <motion.div
                 initial={{ width: '0%' }}
@@ -133,7 +133,7 @@ export function CheckUpdateToast({ isChecking, hasUpdate, latestVersion, onDismi
   useEffect(() => {
     if (!isChecking) {
       setIsVisible(true)
-      // 5秒后自动关闭
+      // Auto-dismiss after 5 seconds
       const timer = setTimeout(() => {
         setIsVisible(false)
         setTimeout(onDismiss, 300)
@@ -162,8 +162,8 @@ export function CheckUpdateToast({ isChecking, hasUpdate, latestVersion, onDismi
                     <div className="absolute inset-0 w-10 h-10 border-3 border-purple-500 border-b-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse' }} />
                   </div>
                   <div className="flex-1">
-                    <span className="text-sm font-semibold text-white">正在检查更新...</span>
-                    <p className="text-xs text-gray-400 mt-0.5">请稍候片刻</p>
+                    <span className="text-sm font-semibold text-white">Checking for updates...</span>
+                    <p className="text-xs text-gray-400 mt-0.5">This will only take a moment</p>
                   </div>
                 </div>
               </div>
@@ -197,8 +197,8 @@ export function CheckUpdateToast({ isChecking, hasUpdate, latestVersion, onDismi
                     <Check className="w-5 h-5 text-white" />
                   </motion.div>
                   <div className="flex-1">
-                    <p className="text-sm font-semibold text-white">已是最新版本 ✨</p>
-                    <p className="text-xs text-green-100 mt-0.5">当前版本 v{latestVersion}</p>
+                    <p className="text-sm font-semibold text-white">You are up to date ✨</p>
+                    <p className="text-xs text-green-100 mt-0.5">Current version v{latestVersion}</p>
                   </div>
                   <button
                     onClick={() => {

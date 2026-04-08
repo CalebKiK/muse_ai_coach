@@ -29,7 +29,7 @@ import StarFieldSplashScreen from './components/SplashScreen/StarField'
 
 const logger = createLogger('App')
 
-// 检测是否在 Electron 环境中
+// Detect whether the app is running inside Electron
 const isElectron = window.electronAPI !== undefined
 
 function App() {
@@ -38,7 +38,7 @@ function App() {
   const syncBooks = useAppStore((state) => state.syncBooks)
   const [splashComplete, setSplashComplete] = useState(false)
 
-  // 更新通知状态
+  // Update notification state
   const [updateInfo, setUpdateInfo] = useState<any>(null)
   const [checkUpdateStatus, setCheckUpdateStatus] = useState<{
     isChecking: boolean
@@ -46,7 +46,7 @@ function App() {
     latestVersion?: string
   }>({ isChecking: false, hasUpdate: false })
 
-  // 手动检查更新
+  // Manual update check
   const handleManualCheckUpdate = async () => {
     if (!isElectron) return
 
@@ -70,12 +70,12 @@ function App() {
         })
       }
     } catch (error) {
-      console.error('检查更新失败:', error)
+      console.error('Failed to check for updates:', error)
       setCheckUpdateStatus({ isChecking: false, hasUpdate: false })
     }
   }
 
-  // 将手动检查更新函数挂载到 window 对象上，供其他组件调用
+  // Expose manual update checks for settings and other UI surfaces
   useEffect(() => {
     if (isElectron) {
       ;(window as any).checkForUpdate = handleManualCheckUpdate
@@ -86,22 +86,22 @@ function App() {
     initialize()
   }, [initialize])
 
-  // 监听跨窗口同步事件
+  // Listen for cross-window sync events
   useEffect(() => {
     const unsubscribe = onSync(() => {
-      logger.info('检测到跨窗口数据变化，正在同步...')
+      logger.info('Detected cross-window data changes, syncing...')
       syncBooks()
     })
 
     return unsubscribe
   }, [syncBooks])
 
-  // 监听更新可用事件
+  // Listen for update availability events
   useEffect(() => {
     if (!isElectron) return
 
     const unsubscribe = window.electronAPI?.onUpdateAvailable((info) => {
-      logger.info('发现新版本:', info.latestVersion)
+      logger.info('New version available:', info.latestVersion)
       setUpdateInfo(info)
     })
 
@@ -141,12 +141,12 @@ function App() {
             <Route path="settings" element={<Settings />} />
             <Route path="about" element={<About />} />
           </Route>
-          {/* 仅在 Electron 环境中显示悬浮窗 */}
+          {/* Only show the floating window inside Electron */}
           {isElectron && <Route path="/floating" element={<FloatingWindow />} />}
         </Routes>
       )}
 
-      {/* 更新通知 Toast */}
+      {/* Update notification toast */}
       {updateInfo && (
         <UpdateToast
           updateInfo={updateInfo}
@@ -154,7 +154,7 @@ function App() {
         />
       )}
 
-      {/* 检查更新状态 Toast */}
+      {/* Update check status toast */}
       {checkUpdateStatus.isChecking && (
         <CheckUpdateToast
           isChecking={checkUpdateStatus.isChecking}

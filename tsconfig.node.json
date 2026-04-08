@@ -2,11 +2,13 @@
   "compilerOptions": {
     "composite": true,
     "skipLibCheck": true,
+    "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
+    "types": ["node"],
     "strict": true,
     "outDir": "dist-electron"
   },
-  "include": ["electron"]
+  "include": ["electron", "tailwind.config.js", "postcss.config.js"]
 }

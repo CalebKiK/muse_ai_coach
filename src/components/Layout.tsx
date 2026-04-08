@@ -16,15 +16,15 @@ import {
 import logo from '/Muse.png'
 
 const navItems = [
-  {path: '/', icon: Home, label: '首页'},
-  {path: '/learning', icon: BookOpen, label: '学习'},
-  {path: '/wordbook', icon: Library, label: '词库'},
-  {path: '/games', icon: Dice5, label: '游戏'},
-  {path: '/ai-profile', icon: Brain, label: '画像'},
-  {path: '/statistics', icon: BarChart3, label: '统计'},
-  {path: '/profile', icon: User, label: '个人'},
-  {path: '/settings', icon: Settings, label: '设置'},
-  {path: '/about', icon: Info, label: '关于'},
+  {path: '/', icon: Home, label: 'Home'},
+  {path: '/learning', icon: BookOpen, label: 'Learn'},
+  {path: '/wordbook', icon: Library, label: 'Words'},
+  {path: '/games', icon: Dice5, label: 'Games'},
+  {path: '/ai-profile', icon: Brain, label: 'AI'},
+  {path: '/statistics', icon: BarChart3, label: 'Stats'},
+  {path: '/profile', icon: User, label: 'Profile'},
+  {path: '/settings', icon: Settings, label: 'Settings'},
+  {path: '/about', icon: Info, label: 'About'},
 ]
 
 export default function Layout() {
@@ -36,7 +36,7 @@ export default function Layout() {
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* 标题栏 */}
+      {/* Title bar */}
       <header className="h-10 bg-white/80 backdrop-blur-sm border-b border-gray-200 flex items-center justify-between px-4 drag-region">
         <div className="flex items-center gap-2 no-drag">
           <img
@@ -72,7 +72,7 @@ export default function Layout() {
       </header>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* 侧边导航 */}
+        {/* Sidebar navigation */}
         <nav className="w-20 bg-white/60 backdrop-blur-sm border-r border-gray-200 py-4 flex flex-col items-center gap-2">
           {navItems.map(({ path, icon: Icon, label }) => {
             const isActive = location.pathname === path
@@ -95,7 +95,7 @@ export default function Layout() {
           })}
         </nav>
 
-        {/* 主内容区 */}
+        {/* Main content area */}
         <main className="flex-1 overflow-auto p-6">
           <Outlet />
         </main>

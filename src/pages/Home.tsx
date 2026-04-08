@@ -20,9 +20,9 @@ export default function Home() {
 
   useEffect(() => {
     const hour = new Date().getHours()
-    if (hour < 12) setGreeting('早上好')
-    else if (hour < 18) setGreeting('下午好')
-    else setGreeting('晚上好')
+    if (hour < 12) setGreeting('Good morning')
+    else if (hour < 18) setGreeting('Good afternoon')
+    else setGreeting('Good evening')
   }, [])
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function Home() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      {/* 欢迎卡片 */}
+      {/* Welcome card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -47,28 +47,28 @@ export default function Home() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold mb-2">
-              {greeting}，{profile?.nickname || '学习者'} 👋
+              {greeting}, {profile?.nickname || 'Learner'} 👋
             </h1>
             <p className="text-white/80">
               {profile?.streak ? (
-                <>已连续学习 <span className="font-bold text-yellow-300">{profile.streak}</span> 天，继续保持！</>
+                <>You have studied for <span className="font-bold text-yellow-300">{profile.streak}</span> day(s) in a row. Keep it going.</>
               ) : (
-                '开始今天的学习之旅吧！'
+                'Start today’s study session.'
               )}
             </p>
           </div>
           <div className="text-right">
             <div className="flex items-center gap-2 bg-white/20 rounded-lg px-3 py-2">
               <Flame className="w-5 h-5 text-orange-300" />
-              <span className="font-bold">{profile?.streak || 0} 天</span>
+              <span className="font-bold">{profile?.streak || 0} days</span>
             </div>
           </div>
         </div>
 
-        {/* 今日进度 */}
+        {/* Daily progress */}
         <div className="mt-6 bg-white/10 rounded-xl p-4">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-white/80">今日学习进度</span>
+            <span className="text-white/80">Today’s progress</span>
             <span className="font-bold">{dailyProgress} / {settings.dailyGoal}</span>
           </div>
           <div className="h-3 bg-white/20 rounded-full overflow-hidden">
@@ -82,49 +82,49 @@ export default function Home() {
         </div>
       </motion.div>
 
-      {/* 统计卡片 */}
+      {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <StatCard
-            title="今日新学"
+            title="New today"
             value={todayStats.newWords}
-            subtitle="个单词"
+            subtitle="words"
             icon={<BookOpen className="w-5 h-5" />}
             color="blue"
           />
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <StatCard
-            title="今日复习"
+            title="Reviewed today"
             value={todayStats.reviewedWords}
-            subtitle="个单词"
+            subtitle="words"
             icon={<RefreshCw className="w-5 h-5" />}
             color="green"
           />
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
           <StatCard
-            title="已掌握"
+            title="Mastered"
             value={totalMastered}
-            subtitle="个单词"
+            subtitle="words"
             icon={<Trophy className="w-5 h-5" />}
             color="purple"
           />
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
           <StatCard
-            title="学习时长"
+            title="Study time"
             value={todayStats.studyTime}
-            subtitle="分钟"
+            subtitle="minutes"
             icon={<Clock className="w-5 h-5" />}
             color="orange"
           />
         </motion.div>
       </div>
 
-      {/* 快捷入口 */}
+      {/* Quick actions */}
       <div className="grid md:grid-cols-2 gap-4">
-        {/* 开始学习 */}
+        {/* Start learning */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -138,9 +138,9 @@ export default function Home() {
                     <BookOpen className="w-8 h-8 text-blue-500" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800">开始学习</h3>
+                    <h3 className="text-lg font-semibold text-gray-800">Start learning</h3>
                     <p className="text-gray-500 text-sm">
-                      {currentBook ? `当前词库: ${currentBook.name}` : '选择词库开始学习'}
+                      {currentBook ? `Current word book: ${currentBook.name}` : 'Choose a word book to begin'}
                     </p>
                   </div>
                 </div>
@@ -150,7 +150,7 @@ export default function Home() {
           </Link>
         </motion.div>
 
-        {/* 待复习 */}
+        {/* Review queue */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -164,9 +164,9 @@ export default function Home() {
                     <RefreshCw className="w-8 h-8 text-green-500" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800">复习单词</h3>
+                    <h3 className="text-lg font-semibold text-gray-800">Review words</h3>
                     <p className="text-gray-500 text-sm">
-                      {reviewCount > 0 ? `${reviewCount} 个单词待复习` : '暂无待复习单词'}
+                      {reviewCount > 0 ? `${reviewCount} word(s) ready for review` : 'No words are waiting for review'}
                     </p>
                   </div>
                 </div>
@@ -177,7 +177,7 @@ export default function Home() {
         </motion.div>
       </div>
 
-      {/* 学习建议 */}
+      {/* Study suggestion */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -189,13 +189,13 @@ export default function Home() {
             <Sparkles className="w-6 h-6 text-amber-500" />
           </div>
           <div>
-            <h3 className="font-semibold text-gray-800 mb-2">今日学习建议</h3>
+            <h3 className="font-semibold text-gray-800 mb-2">Study suggestion</h3>
             <p className="text-gray-600 text-sm leading-relaxed">
               {reviewCount > 0
-                ? `建议先复习 ${Math.min(reviewCount, 20)} 个待复习单词，巩固记忆后再学习新词。根据艾宾浩斯记忆曲线，及时复习可以大大提高记忆效率！`
+                ? `Start by reviewing ${Math.min(reviewCount, 20)} due words before learning new ones. Timely review will strengthen retention and make new study sessions more effective.`
                 : dailyProgress < settings.dailyGoal
-                ? `今日还需学习 ${settings.dailyGoal - dailyProgress} 个单词即可完成目标，加油！`
-                : '🎉 太棒了！今日学习目标已完成，可以适当休息或继续挑战更多单词！'
+                ? `You only need ${settings.dailyGoal - dailyProgress} more word(s) to reach today’s goal.`
+                : '🎉 Great work. You have completed today’s goal and can either rest or keep going.'
               }
             </p>
           </div>

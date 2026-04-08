@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="./README.md">中文文档</a> •
+  <a href="./README.md">Project README</a> •
   <a href="#features">Features</a> •
   <a href="#quick-start">Quick Start</a> •
   <a href="#ai-configuration">AI Configuration</a> •

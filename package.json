@@ -3,12 +3,16 @@
   "version": "1.6.3",
   "description": "Muse - AI-Driven Intelligent English Vocabulary Learning Assistant",
   "main": "dist-electron/main.js",
+  "engines": {
+    "node": ">=20.0.0 <23"
+  },
   "scripts": {
     "dev": "vite --mode electron",
-    "build": "tsc && vite build --mode electron && electron-builder",
-    "build:web": "tsc && vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.node.json --noEmit --tsBuildInfoFile /tmp/muse_ai_coach.tsbuildinfo",
+    "build": "tsc -b && vite build --mode electron && electron-builder",
+    "build:web": "tsc -b && vite build",
     "preview": "vite preview",
-    "electron:dev": "concurrently \"vite --mode electron\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron:dev": "concurrently \"vite --mode electron\" \"wait-on http://localhost:5173 && env -u ELECTRON_RUN_AS_NODE VITE_DEV_SERVER_URL=http://localhost:5173 electron . --no-sandbox --disable-gpu\"",
     "electron:build": "vite build --mode electron && electron-builder",
     "test": "vitest",
     "test:run": "vitest run",
@@ -27,23 +31,23 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^14.3.1",
-    "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.17",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^1.6.1",
     "autoprefixer": "^10.4.16",
     "concurrently": "^8.2.2",
-    "electron": "^28.0.0",
+    "electron": "^28.3.3",
     "electron-builder": "^24.9.1",
     "happy-dom": "^12.10.3",
     "jsdom": "^23.2.0",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.6",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.8",
-    "vite-plugin-electron": "^0.15.5",
+    "typescript": "^5.8.3",
+    "vite": "^5.4.21",
+    "vite-plugin-electron": "^0.15.6",
     "vite-plugin-electron-renderer": "^0.14.5",
-    "vitest": "^1.1.0",
+    "vitest": "^1.6.1",
     "wait-on": "^7.2.0"
   },
   "build": {
@@ -62,6 +66,10 @@
       {
         "from": "public/Muse.ico",
         "to": "Muse.ico"
+      },
+      {
+        "from": "public/Muse.png",
+        "to": "Muse.png"
       }
     ],
     "win": {

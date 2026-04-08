@@ -5,6 +5,7 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   test: {
+    cache: false,
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
@@ -23,7 +24,6 @@ export default defineConfig({
         'electron/',
         'vitest.config.ts',
       ],
-      // 覆盖率目标
       thresholds: {
         statements: 80,
         branches: 80,
@@ -31,9 +31,7 @@ export default defineConfig({
         lines: 80,
       },
     },
-    // 包含的测试文件模式
     include: ['src/**/*.{test,spec}.{js,ts,tsx}'],
-    // 排除的测试文件模式
     exclude: ['node_modules', 'dist', 'dist-electron', 'electron'],
   },
   resolve: {

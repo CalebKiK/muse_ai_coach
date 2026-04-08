@@ -9,7 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('maximize-change', (_, isMaximized) => callback(isMaximized))
   },
   openExternal: (url: string) => ipcRenderer.send('open-external', url),
-  // 悬浮窗控制
+  // Floating window controls
   hideFloatingWindow: () => ipcRenderer.send('floating-window-hide'),
   showFloatingWindow: () => ipcRenderer.send('floating-window-show'),
   toggleFloatingWindow: () => ipcRenderer.send('floating-window-toggle'),
@@ -17,10 +17,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onDataUpdated: (callback: () => void) => {
     ipcRenderer.on('data-updated', callback)
   },
-  // 快捷键管理
+  // Shortcut management
   updateFloatingShortcut: (shortcut: string) => ipcRenderer.send('update-floating-shortcut', shortcut),
   getFloatingShortcut: () => ipcRenderer.invoke('get-floating-shortcut'),
-  // 更新检查
+  // Update checks
   checkForUpdate: () => ipcRenderer.invoke('check-for-update'),
   openDownloadPage: (url: string) => ipcRenderer.send('open-download-page', url),
   onUpdateAvailable: (callback: (updateInfo: any) => void) => {
@@ -28,7 +28,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 })
 
-// 类型声明
+// Type definitions
 export interface ElectronAPI {
   minimize: () => void
   maximize: () => void
